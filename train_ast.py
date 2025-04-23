@@ -13,6 +13,7 @@ import torch.optim as optim
 from tqdm import tqdm
 import pandas as pd
 import numpy as np
+from sklearn.metrics import f1_score
 
 DATA_DIR = "data/train/audio"
 SAMPLE_RATE = 16000
@@ -115,14 +116,26 @@ def train():
         # Validation loop (optional)
         model.eval()
         correct, total = 0, 0
+        all_preds = []
+        all_targets = []
+
         with torch.no_grad():
             for inputs, labels in val_loader:
                 inputs, labels = inputs.to(device), labels.to(device)
                 outputs = model(inputs)
                 preds = torch.argmax(outputs, dim=1)
+
+                all_preds.extend(preds.cpu().numpy())
+                all_targets.extend(labels.cpu().numpy())
+
                 correct += (preds == labels).sum().item()
                 total += labels.size(0)
-        print(f"Validation Accuracy: {100 * correct / total:.2f}%")
+
+        accuracy = 100 * correct / total
+        f1 = f1_score(all_targets, all_preds, average="macro")
+
+        print(f"Validation Accuracy: {accuracy:.2f}% - F1 Score: {f1:.4f}")
+
 
 if __name__ == "__main__":
     train()
