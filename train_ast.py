@@ -32,7 +32,7 @@ class SpeechCommandsDataset(Dataset):
 
     def __getitem__(self, idx):
         filepath = self.filepaths[idx]
-        waveform, sr = torchaudio.load(filepath)
+        waveform, sr = torchaudio.load(os.path.normpath(filepath))
         waveform = torchaudio.functional.resample(waveform, sr, SAMPLE_RATE)
         waveform = waveform.mean(dim=0)  # convert to mono if not already
         input_values = self.extractor(

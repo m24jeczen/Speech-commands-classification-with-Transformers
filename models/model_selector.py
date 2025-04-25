@@ -1,10 +1,10 @@
 from models.ast import ASTModelWrapper
-# from models.cnn_model import CNNModel
+from models.cnn import CNN
 # from models.mlp_model import MLPModel
 
 def get_model(model_name, num_labels):
     if model_name == "cnn":
-        return CNNModel(num_labels)
+        return CNN(num_labels)
     elif model_name == "mlp":
         return MLPModel(num_labels)
     elif model_name == "ast":
