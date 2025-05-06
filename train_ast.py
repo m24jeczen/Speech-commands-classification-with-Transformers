@@ -57,7 +57,7 @@ class SpeechCommandsDataset(Dataset):
 
     def __getitem__(self, idx):
         filepath = self.filepaths[idx]
-        waveform, sr = torchaudio.load(filepath)
+        waveform, sr = torchaudio.load(os.path.normpath(filepath))
         waveform = torchaudio.functional.resample(waveform, sr, SAMPLE_RATE)
         waveform = waveform.mean(dim=0)
         input_values = self.extractor(waveform.numpy(), sampling_rate=SAMPLE_RATE, return_tensors="pt").input_values.squeeze(0)
